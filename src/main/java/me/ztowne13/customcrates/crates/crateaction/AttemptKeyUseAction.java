@@ -22,7 +22,7 @@ public class AttemptKeyUseAction extends CrateAction {
 
         if (PlacedCrate.crateExistsAt(cc, location)) {
             long curTime = System.currentTimeMillis();
-            if (curTime - pm.getLastClickedCrateTime() < 500) {
+            if (curTime - pm.getLastClickedCrateTime() < 100) {
                 return true;
             }
             pm.setLastClickedCrateTime(System.currentTimeMillis());
