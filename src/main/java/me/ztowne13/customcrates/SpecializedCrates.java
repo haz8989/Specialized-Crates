@@ -517,4 +517,9 @@ public class SpecializedCrates extends JavaPlugin {
     public void setSaveFilesTick(int saveFilesTick) {
         this.saveFilesTick = saveFilesTick;
     }
+
+    public SpecializedCratesAPI getApi() {
+        return api;
+    }
+
 }
