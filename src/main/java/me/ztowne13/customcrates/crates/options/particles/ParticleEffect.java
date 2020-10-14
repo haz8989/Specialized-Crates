@@ -201,10 +201,10 @@ public enum ParticleEffect {
         }
         if (!VersionUtils.getServerVersion().contains("v1_7")) {
 
-            if (VersionUtils.getServerVersion().contains("v1_8_R3")) {
-                ParticleEffect188.sendToPlayer(sc, this, player, location, offsetX, offsetY, offsetZ, speed, count);
-                return;
-            }
+//            if (VersionUtils.getServerVersion().contains("v1_8_R3")) {
+//                ParticleEffect188.sendToPlayer(sc, this, player, location, offsetX, offsetY, offsetZ, speed, count);
+//                return;
+//            }
 
             try {
                 if (nmsEnumParticle == null) {
