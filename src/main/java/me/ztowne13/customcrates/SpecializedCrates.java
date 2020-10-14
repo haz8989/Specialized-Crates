@@ -1,5 +1,6 @@
 package me.ztowne13.customcrates;
 
+import me.ztowne13.customcrates.api.SpecializedCratesAPI;
 import me.ztowne13.customcrates.commands.CommandCrate;
 import me.ztowne13.customcrates.commands.CommandKey;
 import me.ztowne13.customcrates.commands.CommandRewards;
@@ -39,6 +40,7 @@ public class SpecializedCrates extends JavaPlugin {
 
     public static double total = 0;
     public static double count = 0;
+    SpecializedCratesAPI api;
     FileHandler messageFile;
     FileHandler rewardsFile;
     FileHandler activeCratesFile;
@@ -134,6 +136,9 @@ public class SpecializedCrates extends JavaPlugin {
                     "only be openable for OP players. Please go to your server.properties file in the main directory of your server" +
                     " and change spawn-protection: 0.");
         }
+
+        this.api = new SpecializedCratesAPI(this);
+
     }
 
     @Override
