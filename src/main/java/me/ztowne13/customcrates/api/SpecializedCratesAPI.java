@@ -9,6 +9,7 @@ import me.ztowne13.customcrates.utils.Utils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+@SuppressWarnings("unused")
 public class SpecializedCratesAPI {
 
     private final SpecializedCrates cc;
