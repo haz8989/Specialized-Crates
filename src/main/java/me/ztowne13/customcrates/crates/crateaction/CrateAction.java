@@ -21,7 +21,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public abstract class CrateAction {
 
@@ -112,10 +112,44 @@ public abstract class CrateAction {
                                     return false;
                             }
 
-                            if (!hasSkipped)
+                            if (!hasSkipped) {
                                 crate.getSettings().getAnimation().playFailToOpen(player, true, true);
-
-                            return false;
+                                return false;
+                            } else { // Reward Summary for stacked keys
+                                ArrayList<HistoryEvent> hevents = new ArrayList<>(PlayerManager.get(cc, player).getPdm().getHistoryEvents());
+                                Collections.reverse(hevents);
+                                // Stack rewards
+                                Map<Reward, Integer> stackedRewards = new HashMap<>(0);
+                                for (int i = opened - 1; i >= 0; i--) {
+                                    HistoryEvent event = hevents.get(i);
+                                    List<Reward> rewards = event.getRewards(); // In karma prison there is only ever 1 reward per key!
+                                    for (Reward reward: rewards) {
+                                        if (reward.isStackable()) {
+                                            boolean stacked = false;
+                                            for (Map.Entry<Reward, Integer> stackedReward : stackedRewards.entrySet()) {
+                                                if (reward.isStackable(stackedReward.getKey())) {
+                                                    stackedRewards.put(stackedReward.getKey(), stackedRewards.get(stackedReward.getKey()) + reward.getAmount());
+                                                    stacked = true;
+                                                    break;
+                                                }
+                                            }
+                                            if (!stacked) {
+                                                stackedRewards.put(reward, reward.getAmount());
+                                            }
+                                        } else {
+                                            if (stackedRewards.containsKey(reward)) {
+                                                stackedRewards.put(reward, stackedRewards.get(reward) + 1);
+                                            } else {
+                                                stackedRewards.put(reward, 1);
+                                            }
+                                        }
+                                    }
+                                }
+                                ChatUtils.msg(player, "&aReward Summary - " + opened + " " + crate.getName() + " crates");
+                                for (Map.Entry<Reward, Integer> reward: stackedRewards.entrySet()) {
+                                    ChatUtils.msg(player, "&a" + reward.getValue() + "x " + reward.getKey().getDisplayName(true));
+                                }
+                            }
                         } else {
                             pm.setConfirming(true);
                             Messages.CONFIRM_OPEN_ALL.msgSpecified(cc, player, new String[]{"%timeout%"}, new String[]{

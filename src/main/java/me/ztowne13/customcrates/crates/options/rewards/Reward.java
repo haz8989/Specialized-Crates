@@ -33,6 +33,7 @@ public class Reward implements Comparable<Reward> {
     boolean giveDisplayItem;
     boolean giveDisplayItemLore = true;
     boolean giveDisplayItemName = true;
+    int amount; // TODO implement stackable rewards (open all at once)
 
     ItemBuilder displayBuilder;
     SaveableItemBuilder saveBuilder;
@@ -142,6 +143,7 @@ public class Reward implements Comparable<Reward> {
         cmd = cmd.replace("%name%", p.getName());
         cmd = cmd.replace("%playername%", p.getName());
         cmd = cmd.replace("{name}", p.getName());
+        cmd = cmd.replace("%amount%", String.valueOf(amount));
 
         if (cmd.contains("%amount")) {
             String[] args = cmd.split("%amount");
@@ -396,6 +398,12 @@ public class Reward implements Comparable<Reward> {
             setTotalUses(-1);
         }
 
+        if (getFc().contains(getPath("amount"))) {
+            amount = getFc().getInt(getPath("amount"));
+        } else {
+            amount = -1;
+        }
+
         return success;
     }
 
@@ -471,6 +479,39 @@ public class Reward implements Comparable<Reward> {
 
     public void setChance(double chance) {
         this.chance = chance;
+    }
+
+    public boolean isStackable() {
+        return amount > 0;
+    }
+
+    public boolean isStackable(Reward other) {
+        if (isStackable()) {
+            boolean stackable = false;
+            for (String command: commands) {
+                if (command.contains("%amount%")) {
+                    for (String otherCommand : other.commands) {
+                        if (otherCommand.contains("%amount%")) {
+                            if (command.equalsIgnoreCase(otherCommand)) {
+                                stackable = true;
+                            } else {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return stackable;
+        }
+        return false;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public SpecializedCrates getCc() {
